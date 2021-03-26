@@ -1,0 +1,49 @@
+
+#ifndef ENC_ALGS_H
+#define ENC_ALGS_H
+
+#include <omp.h>
+
+#include <iostream>
+
+#include "compressor.h"
+#include "io.h"
+
+typedef struct
+{
+    int aligned = 0;
+    int decompress = 0;
+
+    file_io_t in_fq, in_paf;
+
+    uint AVG_CANT, B_CTX, B_CTX_LEN, NS_MODEL_SIZE;
+
+    uint16_t *ctx_avgs_sums;
+    uint16_t *ctx_avgs_err_sums;
+    uint32_t *ctx_err_avgs_total;
+
+    uint32_t total_reads = 0;
+    uint32_t enc_reads = 0;
+} global_structs_t;
+
+void init_global_structs(enano_params *p, context_models *cm, global_structs_t *gs);
+void init_global_structs(enano_params *p, global_structs_t *gs);
+void init_global_stats(context_models *cm, global_structs_t *gs);
+void delete_global_stats(context_models *cm, global_structs_t *gs);
+void copy_average_stats(Compressor *c, global_structs_t *gs);
+void update_stats(context_models *cm, global_structs_t *gs, Compressor **comps, uc blocks_loaded);
+
+bool load_data(global_structs_t *gs, enano_params *p, Compressor **comps, int update_load,
+               uint &blocks_loaded);
+bool load_data_decode(int in_fd, Compressor **comps, int update_load,
+                      uint &blocks_loaded);
+
+/* Parallelized Encode/Decode algorithms*/
+int encode(enano_params &p);
+int decode(enano_params &p);
+
+/* Single thread Encode/Decode algorithms*/
+int encode_st(enano_params &p);
+int decode_st(enano_params &p);
+
+#endif
