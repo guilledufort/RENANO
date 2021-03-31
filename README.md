@@ -1,6 +1,6 @@
 # RENANO FASTQ
 ## A reference-based compressor for nanopore FASTQ files
-#### Documentation: upload pending
+#### Documentation: https://www.biorxiv.org/content/10.1101/2021.03.26.437155v1
 ## Description
 RENANO is a FASTQ lossless reference-based compression algorithm especially designed for nanopore sequencing FASTQ files. 
 
