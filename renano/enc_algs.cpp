@@ -4,47 +4,50 @@ extern uint32_t tot_a0, equal_a0, tot_0, equal_0;
 
 void print_enc_results(enano_params *p) {
     if (p->aligned) {
-        printf("tot_alis: %0.1f%%, tot_matches: %0.1f%%\n", (double)p->g_stats.ali_stats.tot_alis * 100 / p->g_stats.base_in, (double)p->g_stats.ali_stats.tot_matches * 100 / p->g_stats.base_in);
-        printf("sz_ali_qtty: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_ali_qtty * 100 / p->g_stats.base_out,
-               (double)p->g_stats.ali_stats.sz_ali_qtty * 8 / p->g_stats.ali_stats.ali_qtty_cnt);
+        printf("Total %% of aligned base call strings: %0.1f%%, %% of matches: %0.1f%%\n", (double)p->g_stats.ali_stats.tot_alis * 100 / p->g_stats.base_in, (double)p->g_stats.ali_stats.tot_matches * 100 / p->g_stats.ali_stats.tot_alis);
+        printf("Stream \t %% of compressed base calls \t Avg. symbol len. (bits)\n");
         double b_ent = (double)p->g_stats.ali_stats.sz_seq * 8 / p->g_stats.ali_stats.seq_cnt;
-        printf("sz_seq: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_seq * 100 / p->g_stats.base_out,
+        printf("B \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_seq * 100 / p->g_stats.base_out,
                b_ent);
-        printf("sz_q_start: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_q_start * 100 / p->g_stats.base_out,
+        printf("L \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_lens * 100 / p->g_stats.base_out,
+               (double)p->g_stats.ali_stats.sz_lens * 8 / p->g_stats.ali_stats.lens_cnt);
+        printf("Q \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_ali_qtty * 100 / p->g_stats.base_out,
+               (double)p->g_stats.ali_stats.sz_ali_qtty * 8 / p->g_stats.ali_stats.ali_qtty_cnt);
+        printf("S \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_q_start * 100 / p->g_stats.base_out,
                (double)p->g_stats.ali_stats.sz_q_start * 8 / p->g_stats.ali_stats.q_start_cnt);
-        printf("sz_q_end: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_q_end * 100 / p->g_stats.base_out,
+        printf("E \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_q_end * 100 / p->g_stats.base_out,
                (double)p->g_stats.ali_stats.sz_q_end * 8 / p->g_stats.ali_stats.q_end_cnt);
-        printf("sz_t_start: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_t_start * 100 / p->g_stats.base_out,
-               (double)p->g_stats.ali_stats.sz_t_start * 8 / p->g_stats.ali_stats.t_start_cnt);
-        printf("sz_strand: %0.1f%%, ent: %0.3f, reversed: %0.3f\n", (double)p->g_stats.ali_stats.sz_strand * 100 / p->g_stats.base_out,
-               (double)p->g_stats.ali_stats.sz_strand * 8 / p->g_stats.ali_stats.strand_cnt, (double)p->g_stats.ali_stats.tot_strands * 100 / p->g_stats.ali_stats.strand_cnt);
         if (p->aligned == REF_ALI)
-            printf("sz_t_idx: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_t_idx * 100 / p->g_stats.base_out,
+            printf("U \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_t_idx * 100 / p->g_stats.base_out,
                 (double)p->g_stats.ali_stats.sz_t_idx * 8 / p->g_stats.ali_stats.t_idx_cnt);
-        printf("sz_match: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_match * 100 / p->g_stats.base_out,
-               (double)p->g_stats.ali_stats.sz_match * 8 / p->g_stats.ali_stats.match_cnt);
-        printf("sz_skip: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_skip * 100 / p->g_stats.base_out,
-               (double)p->g_stats.ali_stats.sz_skip * 8 / p->g_stats.ali_stats.skip_cnt);
-        printf("sz_ins: %0.1f%%, ent: %0.3f\n", (double)p->g_stats.ali_stats.sz_ins * 100 / p->g_stats.base_out,
+        printf("S\' \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_t_start * 100 / p->g_stats.base_out,
+               (double)p->g_stats.ali_stats.sz_t_start * 8 / p->g_stats.ali_stats.t_start_cnt);
+        printf("D \t %0.1f%% \t %0.3f, reversed: %0.3f\n", (double)p->g_stats.ali_stats.sz_strand * 100 / p->g_stats.base_out,
+               (double)p->g_stats.ali_stats.sz_strand * 8 / p->g_stats.ali_stats.strand_cnt, (double)p->g_stats.ali_stats.tot_strands * 100 / p->g_stats.ali_stats.strand_cnt);
+        printf("N \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_ins * 100 / p->g_stats.base_out,
                (double)p->g_stats.ali_stats.sz_ins * 8 / p->g_stats.ali_stats.ins_cnt);
+        printf("K \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_skip * 100 / p->g_stats.base_out,
+               (double)p->g_stats.ali_stats.sz_skip * 8 / p->g_stats.ali_stats.skip_cnt);
+        printf("M \t %0.1f%% \t %0.3f\n", (double)p->g_stats.ali_stats.sz_match * 100 / p->g_stats.base_out,
+               (double)p->g_stats.ali_stats.sz_match * 8 / p->g_stats.ali_stats.match_cnt);
     }
 
     printf(
         "Stream <original size in bytes> -> <compressed size in bytes> "
         "(<compression ratio>)\n");
 
-    printf("IDs   %lld -> %lld (%0.3f)\n", p->g_stats.name_in, p->g_stats.name_out,
+    printf("IDs   %lu -> %lu (%0.3f)\n", p->g_stats.name_in, p->g_stats.name_out,
            (double)p->g_stats.name_out / p->g_stats.name_in);
     if (p->aligned == STORE_REF_ALI)
-        printf("Bases %lld -> %lld (%0.3f) - without ref: (%0.3f) - ref: (%0.3f%%) \n", p->g_stats.base_in, p->g_stats.base_out,
+        printf("Bases %lu -> %lu (%0.3f) - without ref: (%0.3f) - ref: (%0.3f%%) \n", p->g_stats.base_in, p->g_stats.base_out,
            (double)p->g_stats.base_out / p->g_stats.base_in, (double)(p->g_stats.base_out - p->g_stats.ref_sz) / p->g_stats.base_in,
             (double)p->g_stats.ref_sz*100/p->g_stats.base_out);
     else 
-        printf("Bases %lld -> %lld (%0.3f)\n", p->g_stats.base_in, p->g_stats.base_out,
+        printf("Bases %lu -> %lu (%0.3f)\n", p->g_stats.base_in, p->g_stats.base_out,
            (double)p->g_stats.base_out / p->g_stats.base_in);
-    printf("Quals %lld -> %lld (%0.3f)\n", p->g_stats.qual_in, p->g_stats.qual_out,
+    printf("Quals %lu -> %lu (%0.3f)\n", p->g_stats.qual_in, p->g_stats.qual_out,
            (double)p->g_stats.qual_out / p->g_stats.qual_in);
-    printf("Total %lld -> %lld (%0.3f)\n", p->g_stats.total_in, p->g_stats.total_out,
+    printf("Total %lu -> %lu (%0.3f)\n", p->g_stats.total_in, p->g_stats.total_out,
            (double)p->g_stats.total_out / p->g_stats.total_in);
 }
 
@@ -300,14 +303,6 @@ void update_stats(context_models *cm, global_structs_t *gs, Compressor **comps, 
         }
         cm->am->t_idxs_m4.mix_array(models, blocks_loaded);
 
-        //Ali ins match list
-        // for (i = 0; i < 2; i++) {
-        //     for (uint c = 0; c < blocks_loaded; c++) {
-        //         models[c] = (void *)(&comps[c]->cm->am->cs_ins_mtch_m[i]);
-        //     }
-        //     cm->am->cs_ins_mtch_m[i].mix_array(models, blocks_loaded);
-        // }
-
         // cs matches
         for (uint c = 0; c < blocks_loaded; c++) {
             models[c] = (void *)(&comps[c]->cm->am->cs_matches_m1);
@@ -348,7 +343,7 @@ void update_stats(context_models *cm, global_structs_t *gs, Compressor **comps, 
 /*
  * A blocking read that refuses to return truncated reads.
  */
-bool load_data(global_structs_t *gs, enano_params *p, Compressor **comps, int update_load,
+bool load_data(global_structs_t *gs, Compressor **comps, int update_load,
                uint &blocks_loaded) {
     int sz;
 
@@ -464,20 +459,20 @@ int encode(enano_params &p) {
         update_batches[batch];  // MIN(BLK_UPD_FREQ, BLK_UPD_THRESH);
 
     p.enc_reads = 0;
-    ali_list_t *g_al;
+    ali_list_t *g_al = NULL;
     uint32_t ref_len, ref_sz;
 
     if (p.aligned == STORE_REF_ALI) {
         // We need to store the Reference that is aligned
         Compressor *comp = comps[0];
-        g_al = comp->store_reference(&gs.in_fq, &gs.in_paf, p.out_fd, ref_len, ref_sz);
+        g_al = comp->store_reference(&gs.in_paf, p.out_fd, ref_len, ref_sz);
         
         for (uint i = 0; i < cant_compressors; i++)
             comps[i]->ac->al = g_al;
         
         memcpy(cm->model_seq, comp->cm->model_seq, sizeof(BASE_MODEL<uint8_t>) * comp->NS_MODEL_SIZE);
             
-        printf("Original ref sz: %lld -> Actually used: %lld (%0.3f) \n", p.g_idx.total_sz, ref_len, double(ref_len) / p.g_idx.total_sz);
+        printf("Original ref sz: %u -> Actually used: %u (%0.3f) \n", p.g_idx.total_sz, ref_len, double(ref_len) / p.g_idx.total_sz);
     }
 
     printf(
@@ -486,7 +481,7 @@ int encode(enano_params &p) {
         BLK_UPD_THRESH, BLK_UPD_THRESH - 1, BLK_UPD_FREQ);
 
     while (update_blocks < BLK_UPD_THRESH &&
-           !(finished = load_data(&gs, &p, comps, update_load, blocks_loaded))) {
+           !(finished = load_data(&gs, comps, update_load, blocks_loaded))) {
 #pragma omp parallel for
         for (uint i = 0; i < blocks_loaded; i++) {
             copy_average_stats(comps[i], &gs);
@@ -532,7 +527,7 @@ int encode(enano_params &p) {
 
     while (!finished) {
         uint blocks_loaded = 0;
-        finished = load_data(&gs, &p, comps, p.num_threads, blocks_loaded);
+        finished = load_data(&gs, comps, p.num_threads, blocks_loaded);
 #pragma omp parallel for
         for (uint i = 0; i < blocks_loaded; i++) {
             copy_average_stats(comps[i], &gs);
@@ -747,20 +742,20 @@ int encode_st(enano_params &p) {
     init_global_files_and_variables(&p, &gs);
 
     p.enc_reads = 0;
-    ali_list_t *g_al;
+    ali_list_t *g_al = NULL;
     uint32_t ref_len, ref_sz;
 
     if (p.aligned == STORE_REF_ALI) {
         // We need to store the Reference that is aligned
         Compressor *comp = comps[0];
-        g_al = comp->store_reference(&gs.in_fq, &gs.in_paf, p.out_fd, ref_len, ref_sz);
+        g_al = comp->store_reference(&gs.in_paf, p.out_fd, ref_len, ref_sz);
         comp->ac->al = g_al;
-        printf("Original ref sz: %lld -> Actually used: %lld (%0.3f) \n", p.g_idx.total_sz, ref_len, double(ref_len) / p.g_idx.total_sz);
+        printf("Original ref sz: %u -> Actually used: %u (%0.3f) \n", p.g_idx.total_sz, ref_len, double(ref_len) / p.g_idx.total_sz);
     }
 
     // Update stats
     uint blocks_loaded;
-    while (!load_data(&gs, &p, comps, 1, blocks_loaded)) {
+    while (!load_data(&gs, comps, 1, blocks_loaded)) {
         // printf("Block: %d.\n", block_num);
         comps[0]->fq_compress();
         if (!comps[0]->output_block(p.out_fd)) {

@@ -140,7 +140,7 @@ void decode_seq_a(ali_comp_t *ac, RangeCoder *rc, char *seq, uint32_t len) {
     uint NS_MODEL_SIZE = ac->NS_MODEL_SIZE;
     const char *dec = "ACGTN";
 
-    for (int32_t i = 0; i < len; i++) {
+    for (uint32_t i = 0; i < len; i++) {
         unsigned char b;
         b = ac->am->model_seq[ac->last_bc_ctx].decodeSymbol(rc, ac->p->upd_m);
         *seq++ = dec[b];
@@ -156,7 +156,7 @@ void decode_not_b(ali_comp_t *ac, RangeCoder *rc, char *seq, char not_b_c) {
     ac->last_bc_ctx = UPDATE_CONTEXT(ac->last_bc_ctx, b);
     
 }
-void upd_seq_model(ali_comp_t *ac, RangeCoder *rc, char *seq, int len) {
+void upd_seq_model(ali_comp_t *ac, char *seq, int len) {
     uint NS_MODEL_SIZE = ac->NS_MODEL_SIZE;
     for (int i = 0; i < len; i++) {
         unsigned char b = L[(unsigned char)seq[i]];
@@ -278,6 +278,7 @@ uint32_t get_enc_size(ali_comp_t *ac) {
 void make_ali_stats_global(ali_comp_t *ac) {
     ac->p->g_stats.ali_stats.sz_ali_qtty += ac->sz_ali_qtty;
     ac->p->g_stats.ali_stats.sz_seq += ac->sz_seq;
+    ac->p->g_stats.ali_stats.sz_lens += ac->sz_lens;
     ac->p->g_stats.ali_stats.sz_q_start += ac->sz_q_start;
     ac->p->g_stats.ali_stats.sz_q_end += ac->sz_q_end;
     ac->p->g_stats.ali_stats.sz_t_start += ac->sz_t_start;
@@ -293,6 +294,7 @@ void make_ali_stats_global(ali_comp_t *ac) {
     ac->p->g_stats.ali_stats.tot_strands += ac->tot_strands;
     ac->p->g_stats.ali_stats.ali_qtty_cnt += ac->ali_qtty_cnt;
     ac->p->g_stats.ali_stats.seq_cnt += ac->seq_cnt;
+    ac->p->g_stats.ali_stats.lens_cnt += ac->lens_cnt;
     ac->p->g_stats.ali_stats.q_start_cnt += ac->q_start_cnt;
     ac->p->g_stats.ali_stats.q_end_cnt += ac->q_end_cnt;
     ac->p->g_stats.ali_stats.t_start_cnt += ac->t_start_cnt;
@@ -404,8 +406,6 @@ static inline char *search_index_for_tseq(int32_t idx, global_index_t *g_idx) {
     return g_idx->bcs_array[idx];
 }
 
-uint num_print = 0;
-
 static inline void encode_triplet(ali_comp_t *ac, char* t_seq, uint32_t i_t, char* q_seq, uint32_t i_q,
                                 uint32_t skip_len, uint32_t ins_len, uint32_t m_len, bool &first) {
     encode_cs_skip(ac, &ac->rc_skip, skip_len);
@@ -419,14 +419,8 @@ static inline void encode_triplet(ali_comp_t *ac, char* t_seq, uint32_t i_t, cha
     } else {
         first = false;
         encode_seq(ac, &ac->rc_seq, &q_seq[i_q], ins_len);
-        if ( num_print < 0) {
-            for (uint i = 0; i < m_len; i ++)
-                printf("%c", toupper(t_seq[i_t + skip_len + i]));
-            printf("\n");
-            num_print += 1;
-        }
     }
-    upd_seq_model(ac, &ac->rc_seq, &q_seq[i_q + ins_len], m_len);
+    upd_seq_model(ac, &q_seq[i_q + ins_len], m_len);
 }
 
 static inline void encode_parts(ali_comp_t *ac, char* t_seq, uint32_t i_t, char* q_seq, uint32_t i_q,
@@ -477,14 +471,8 @@ static inline void decode_parts(ali_comp_t *ac, uint32_t i_q, uint32_t i_t, uint
         first = false;
         decode_seq_a(ac, &ac->rc_seq, &seq_buf[i_q], ins_len);
     }
-    if ( num_print < 0) {// && num_print > 232200) {
-        for (uint i = 0; i < match_len; i ++)
-            printf("%c", t_seq[i_t + skip_len + i]);
-        printf("\n");
-        num_print += 1;
-    }
     memcpy(&seq_buf[i_q + ins_len], &t_seq[i_t + skip_len], match_len);
-    upd_seq_model(ac, &ac->rc_seq, &seq_buf[i_q + ins_len], match_len);
+    upd_seq_model(ac, &seq_buf[i_q + ins_len], match_len);
 }
 /* It decodes the alignment ali with the values present in ali_list to position seq_buf*/
 static inline void decode_ali(alignment_t *ali, ali_comp_t *ac, global_index_t *g_idx, char *seq_buf) {
@@ -523,7 +511,7 @@ static inline uint get_slen_cs(char *cs, uint cs_len, uint &i) {
 }
 static inline void enc_cs_string(alignment_t *ali, ali_comp_t *ac, global_index_t *g_idx, char *seq) {
     uint32_t ali_len = ali->q_end - ali->q_start;
-    uint32_t match_len = 0, ins_len = 0, i = 0, op_len = 0, skip_len = 0;
+    uint32_t ins_len = 0, i = 0, op_len = 0, skip_len = 0;
     char *cs = ali->cs.l;
     uint32_t cs_len = ali->cs.top;
     char *t_seq = search_index_for_tseq(ali->t_idx, g_idx);
@@ -590,7 +578,7 @@ static inline void enc_cs_string(alignment_t *ali, ali_comp_t *ac, global_index_
 }
 static inline void enc_cs_string_sr(alignment_t *ali, ali_comp_t *ac, global_index_t *g_idx, char *seq) {
     uint32_t ali_len = ali->q_end - ali->q_start;
-    uint32_t match_len = 0, ins_len = 0, i = 0, op_len = 0, skip_len = 0, s_gap = 0, del_len = 0, reg_offset = 0;
+    uint32_t ins_len = 0, i = 0, op_len = 0, skip_len = 0, s_gap = 0, del_len = 0;
     char *cs = ali->cs.l;
     uint32_t cs_len = ali->cs.top;
     char *t_seq_old = search_index_for_tseq(ali->t_idx, g_idx);
@@ -722,10 +710,9 @@ static inline void encode_ali(alignment_t *ali, ali_comp_t *ac, global_index_t *
     }
 }
 
-void encode_ali_seq(std::string q_name, ali_comp_t *ac, uint32_t i, char *seq, uint32_t q_len, global_index_t *g_idx, int aligned) {
-    bool print = false;
+void encode_ali_seq(std::string q_name, ali_comp_t *ac, char *seq, uint32_t q_len, global_index_t *g_idx, int aligned) {
     alignment_t *ali_ptr;
-    int8_t qtty = 0;
+    uint8_t qtty = 0;
     ali_info ali_i;
 
     std::unordered_map<std::string, ali_info>::iterator got = ac->al->alis_info_hm.find(q_name);
@@ -763,11 +750,10 @@ void encode_ali_seq(std::string q_name, ali_comp_t *ac, uint32_t i, char *seq, u
         encode_seq(ac, &ac->rc_seq, seq + next_enc_pos, q_len - next_enc_pos);
 }
 
-void get_dec_ali(alignment_t &ali, ali_comp_t *ac, uint32_t seq_len, uint32_t prev_q_start) {
+void get_dec_ali(alignment_t &ali, ali_comp_t *ac, uint32_t prev_q_start) {
     decode_q_start_end(ac, &ac->rc_q_start, &ac->rc_q_end, ali.q_start, ali.q_end, prev_q_start);
     ali.t_start = decode_t_start(ac, &ac->rc_t_start);
     ali.ali_len = ali.q_end - ali.q_start;
-    assert(ali.ali_len >= 0);
     if (ac->p->aligned == STORE_REF_ALI)
         ali.t_idx = 0;
     else
@@ -778,45 +764,27 @@ void get_dec_ali(alignment_t &ali, ali_comp_t *ac, uint32_t seq_len, uint32_t pr
 #define PRINT_ALIS
 
 int decode_ali_seq(char *seq_p, ali_comp_t *ac, global_index_t *g_idx, uint32_t seq_len) {
-    int total_seqs = 0;
     ac->al->ali_idx = 0;
-    bool print = false;
     alignment_t ali;
 
-    int8_t qtty = decode_qtty(ac, &ac->rc_ali_qtty);
+    uint8_t qtty = decode_qtty(ac, &ac->rc_ali_qtty);
     assert(qtty <= MAX_ALI_R);
 
     uint32_t next_enc_pos = 0;
     uint32_t prev_q_start = 0;
     for (uint32_t j = 0; j < qtty; j++) {
-        get_dec_ali(ali, ac, seq_len, prev_q_start);
+        get_dec_ali(ali, ac, prev_q_start);
         if (ali.q_start > next_enc_pos) {
             decode_seq_a(ac, &ac->rc_seq, seq_p + next_enc_pos, ali.q_start - next_enc_pos);
-#ifdef DEBUG_ALIS
-            if (print)
-                std::cout << " Enc seq: [" << next_enc_pos << ", " << ali.q_start << ") \n";
-#endif
         }
 
         decode_ali(&ali, ac, g_idx, seq_p + ali.q_start);
-#ifdef DEBUG_ALIS
-        if (print) {
-            std::cout << ali.t_idx << " - strand: " << (int)ali.strand << ", q_start: " << ali.q_start << ", q_end: " << ali.q_end << ") \n";
-            for (int i = ali.q_start; i < ali.q_end; i++)
-                std::cout << seq_p[i];
-            std::cout << "\n";
-        }
-#endif
         next_enc_pos = ali.q_end;
         prev_q_start = ali.q_start;
     }
     // Encode remaining basecall sequence
     if (next_enc_pos < seq_len) {
         decode_seq_a(ac, &ac->rc_seq, seq_p + next_enc_pos, seq_len - next_enc_pos);
-#ifdef DEBUG_ALIS
-        if (print)
-            std::cout << " Enc seq: [" << next_enc_pos << ", " << ali.q_len << ") \n";
-#endif
     }
     return 0;
 }
@@ -830,9 +798,9 @@ typedef struct {
 
 // If end1 is larger than end2, then in case of a tie the ends are processed before the beginnings
 bool ali_marks_sorter(ali_mark am1, ali_mark am2) {
-    return am1.ali->t_idx < am2.ali->t_idx ||
-           am1.ali->t_idx  == am2.ali->t_idx && am1.pos < am2.pos || 
-           am1.ali->t_idx  == am2.ali->t_idx && am1.pos == am2.pos && am1.end > am2.end;
+    return (am1.ali->t_idx < am2.ali->t_idx) ||
+           ((am1.ali->t_idx  == am2.ali->t_idx) && (am1.pos < am2.pos))|| 
+           ((am1.ali->t_idx  == am2.ali->t_idx) && (am1.pos == am2.pos) && (am1.end > am2.end));
 }
 
 char* fake_ref;
@@ -840,7 +808,7 @@ char* fake_ref;
 uint32_t encode_min_reference(ali_list_t *al, ali_comp_t *ac, global_index_t *g_idx, uint32_t &num_seg) {
     //Create a marks array that stores starting and ending positions of every alignment
     ali_mark * ali_marks = new ali_mark[al->ali_top*2];
-    for (int i = 0; i < al->ali_top; i++) {
+    for (uint i = 0; i < al->ali_top; i++) {
         ali_marks[2*i].ali = &al->alis[i];
         ali_marks[2*i].pos = al->alis[i].t_start;
         ali_marks[2*i].end = false;
@@ -850,12 +818,12 @@ uint32_t encode_min_reference(ali_list_t *al, ali_comp_t *ac, global_index_t *g_
     }
     //Sort the marks by position
     std::sort(ali_marks, ali_marks + 2 * al->ali_top, ali_marks_sorter);
-    uint32_t reg_st = 0, reg_end = 0, r_start = 0, r_end = 0, ovlp = 0;
+    uint32_t reg_st = 0, reg_end = 0, r_start = 0, ovlp = 0;
 
     uint i = 0;
     uint32_t last_enc = 0, next_r_pos = 0, ref_len = 0;
     ali_reg* ar = NULL;
-    uint32_t num_reg = 0, t_idx_reg = 0, t_idx_ovlp = 0;
+    uint32_t num_reg = 0, t_idx_ovlp = 0;
     
     for (i = 0; i < al->ali_top*2; i++) {
         alignment_t* ali = ali_marks[i].ali;
@@ -871,7 +839,6 @@ uint32_t encode_min_reference(ali_list_t *al, ali_comp_t *ac, global_index_t *g_
                 //if its the start of a new region
                 if (num_reg == 1) {
                     r_start = ali->t_start_new;
-                    t_idx_reg = ali->t_idx;
                 }
                 //if its the start of a new overlapping
                 if (ovlp == 2) {

@@ -1,0 +1,2 @@
+curl https://ftp.ncbi.nlm.nih.gov/genomes/refseq/fungi/Saccharomyces_cerevisiae/latest_assembly_versions/GCF_000146045.2_R64/GCF_000146045.2_R64_genomic.fna.gz -o yst_genome.fna.gz
+gunzip yst_genome.fna.gz

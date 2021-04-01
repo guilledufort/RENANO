@@ -29,10 +29,7 @@
 #include <sys/types.h>
 #include <omp.h>
 
-#include "alignments.h"
 #include "paf_process.h"
-#include "params.h"
-#include "io.h"
 
 #ifndef WIN32
 
@@ -142,7 +139,7 @@ class Compressor {
     int last_p_len;        // Length of last common prefix
     int last_s_len;
 
-    ali_list_t *store_reference(file_io_t *in_fq, file_io_t *in_paf, int out_fd, uint32_t &ref_len, uint32_t &ref_sz);
+    ali_list_t *store_reference(file_io_t *in_paf, int out_fd, uint32_t &ref_len, uint32_t &ref_sz);
     char *decode_reference(ali_comp_t *ac, int in_fd, uint32_t &ref_len);
 
     void soft_reset();

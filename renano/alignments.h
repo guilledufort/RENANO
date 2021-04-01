@@ -150,8 +150,8 @@ typedef struct {
 typedef struct
 {
     RangeCoder rc_ali_qtty, rc_seq, rc_q_start, rc_q_end, rc_t_start, rc_t_end, rc_strand, rc_t_idx, rc_ins_mtch, rc_match, rc_skip, rc_ins;
-    int32_t total_sz = 0, sz_ali_qtty, sz_seq, sz_q_start, sz_q_end, sz_t_start, sz_t_end, sz_strand, sz_t_idx, sz_ins_mtch, sz_match, sz_skip, sz_ins;
-    int32_t ali_qtty_cnt = 0, q_start_cnt = 0, q_end_cnt = 0, t_start_cnt = 0, t_end_cnt = 0, strand_cnt = 0, t_idx_cnt = 0, ins_mtch_cnt = 0, match_cnt = 0, skip_cnt = 0, ins_cnt = 0, seq_cnt = 0;
+    int32_t total_sz = 0, sz_ali_qtty, sz_seq, sz_q_start, sz_q_end, sz_t_start, sz_t_end, sz_strand, sz_t_idx, sz_ins_mtch, sz_match, sz_skip, sz_ins, sz_lens;
+    int32_t ali_qtty_cnt = 0, q_start_cnt = 0, q_end_cnt = 0, t_start_cnt = 0, t_end_cnt = 0, strand_cnt = 0, t_idx_cnt = 0, ins_mtch_cnt = 0, match_cnt = 0, skip_cnt = 0, ins_cnt = 0, seq_cnt = 0, lens_cnt = 0;
     int32_t tot_alis = 0, tot_matches = 0, tot_strands = 0;
     /* Ali output buffers */
     char out_ali_qttys[SMALL_BLK_SIZE];
@@ -178,7 +178,7 @@ typedef struct
 
     uint8_t last_ins_match = INSER;
     uint8_t min_match_len = MIN_MATCH_LEN;
-    int last_bc_ctx = 0;
+    uint last_bc_ctx = 0;
 
 } ali_comp_t;
 
@@ -197,7 +197,7 @@ uint32_t search_index(std::string r_name, global_index_t *g_idx);
 
 uint32_t encode_min_reference(ali_list_t *al, ali_comp_t *ac, global_index_t *g_idx, uint32_t &num_seg);
 
-void encode_ali_seq(std::string q_name, ali_comp_t *ac, uint32_t i, char *seq, uint32_t q_len, global_index_t *g_idx, int aligned);
+void encode_ali_seq(std::string q_name, ali_comp_t *ac, char *seq, uint32_t q_len, global_index_t *g_idx, int aligned);
 int decode_ali_seq(char *seq_p, ali_comp_t *ac, global_index_t *g_idx, uint32_t seq_len);
 void decode_seq_a(ali_comp_t *ac, RangeCoder *rc, char *seq, uint32_t len);
 uint32_t get_enc_size(ali_comp_t *ac);

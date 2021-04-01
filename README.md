@@ -1,8 +1,10 @@
 # RENANO FASTQ
 ## A reference-based compressor for nanopore FASTQ files
-#### Documentation: https://www.biorxiv.org/content/10.1101/2021.03.26.437155v1
+#### Documentation (preprint): https://www.biorxiv.org/content/10.1101/2021.03.26.437155v1
 ## Description
-RENANO is a FASTQ lossless reference-based compression algorithm especially designed for nanopore sequencing FASTQ files. 
+RENANO is a reference-based lossless FASTQ data compressor, specifically tailored to compress FASTQ files generated with nanopore sequencing technologies.
+RENANO improves on its state of the art predecessor [ENANO](https://github.com/guilledufort/EnanoFASTQ/blob/master/README.md), by providing a more efficient base call sequence compression component.
+Two compression algorithms are introduced, corresponding to the following scenarios: (1) a reference genome is available without cost to both the compressor and the decompressor;  (2) the reference genome is available only on the compressor side, and a compacted version of the reference is included in the compressed file.
 
 ## Install from source code
 
@@ -86,6 +88,99 @@ DECOMPRESSION OPTIONS:
 	-t <num>       Maximum number of threads allowed to use by the decompressor. Default is 8.
 
 ```
+
+## Datasets information
+
+To test our compressor we ran experiments on the following datasets. The full information of the datasets is in our publication.
+
+| Dataset | Num. of files | size (GB) | Description | Link |
+|------|------|------|------|------|
+*hss* | 1 | 268 | Human GM12878 Utah/Ceph cell line | https://github.com/nanopore-wgs-consortium/NA12878 |
+*bra\** | 18 | 46 | Doubled haploid canola (Brassica napus L.) | https://www.nature.com/articles/s41598-019-45131-0#data-availability |
+*sor\** | 4 | 134 | Sorghum bicolor Tx430 | https://www.nature.com/articles/s41467-018-07271-1#data-availability |
+*fly\** | 1 | 17 | Drosophila ananassae | https://www.g3journal.org/content/8/10/3131#sec-1 |
+*yst\** | 5 | 8 | Saccharomyces cerevisiae S288C | https://academic.oup.com/gigascience/article/6/2/giw018/2865217 |
+
+\*Datasets that require the SRA toolkit to be downloaded. 
+
+### Downloading the datasets and the reference genomes
+
+To download a dataset you have to run the *download_script.sh* of the specific dataset.
+For example, to download *sor* run:
+```bash
+cd RENANO
+dataset/sor/download_script.sh
+```
+
+To download the reference genome of a dataset you have to run the *download_gene.sh* script of the specific dataset.
+For example, to download *sor* reference genome run:
+```bash
+cd RENANO
+dataset/sor/download_gene.sh
+```
+
+The scripts use the command *wget* to perform the download. 
+To install *wget* on macOS run:
+ ```bash
+brew install wget
+```
+To install *wget* on Ubuntu or CentOS run:
+ ```bash
+sudo apt-get install wget
+```
+
+Some datasets require the SRA toolkit (2.9.6-1 release) to be downloaded. To install the SRA toolkit you can follow the instructions here https://ncbi.github.io/sra-tools/install_config.html, and place the toolkit's root-folder under the RENANO directory, or you can run one of the scripts we provide. There is a different script for each OS, so you have to choose the one corresponding to your OS.
+For example, to install the SRA toolkit on macOS you can run:
+ ```bash
+cd RENANO
+./install_SRA_mac.sh
+```
+
+## Alignment information
+
+To obtain alignment information in [PAF format](https://lh3.github.io/minimap2/minimap2.html) for each FASTQ file we recommend using the tool [Minimap2](https://github.com/lh3/minimap2).
+
+To install Minimap2 in the ROOT folder run:
+ ```bash
+cd RENANO
+./install_minimap2.sh
+```
+
+To align a specific FASTQ file against a reference genome using Minimap2 run:
+ ```bash
+cd RENANO
+minimap2/minimap2 -x map-ont --secondary=no --cs [ref_file] [fastq_file] > [paf_file]
+```
+
+To align all the files of a dataset against the corresponding reference genome use *run_minimap.sh* script.
+For this script to work, both the dataset and the corresponding reference genome have to be previously downloaded, following the instructions in the previous section.
+For example, to align the files in *sor* run:
+ ```bash
+cd RENANO
+./run_minimap.sh sor
+```
+
+## Examples
+We add an *example* folder with test files to run simple use examples the tool.
+### Compress using RENANO with reference
+To run the compressor with 8 threads on the example file:
+```bash
+cd RENANO
+renano/renano -r example/yst_genome.fna example/SAMPLE.paf example/SAMPLE.fastq example/SAMPLE.renano
+```
+### Decompress using RENANO with reference
+To decompress with 8 threads the example compressed file:
+```bash
+cd RENANO
+renano/renano -d -r example/yst_genome.fna example/SAMPLE.renano example/SAMPLE_dec.fastq
+```
+
+### Check if decoding is successful
+The output has to be empty.
+```bash
+cmp example/SAMPLE.fastq example/SAMPLE_dec.fastq
+```
+
 
 ## Credits
 The methods used for encoding the reads identifiers, and to model frequency counters,

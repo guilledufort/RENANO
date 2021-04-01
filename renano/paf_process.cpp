@@ -54,7 +54,7 @@ void add_alis(std::string q_name, ali_list_t *al, alignment_t *ali_group[MAX_ALI
     uint8_t ali_qtty = 0;
     ali_info ali_i;
     ali_i.alis_pos = al->ali_top;
-    for (int i = 0; i < j; i++) {
+    for (uint i = 0; i < j; i++) {
         if (ali_group[i]->aligned) {
             assert(al->ali_top < al->max_alis);
             al->alis[al->ali_top++] = *ali_group[i];
@@ -77,12 +77,12 @@ void add_alis(std::string q_name, ali_list_t *al, alignment_t *ali_group[MAX_ALI
 /* Retruns the final number of valid alignments*/
 /* This function receives an alignment and decides wether to add it or not to the ali_lists. */
 /* In case there is more than one alignment for the same read, they are preprocessed so there are no overlappings. *. */
-static inline int32_t preprocess_alignments(alignment_t *ali_group[MAX_ALI_R], uint8_t j, ali_list_t *al, global_index_t *g_idx) {
+static inline int32_t preprocess_alignments(alignment_t *ali_group[MAX_ALI_R], uint8_t j) {
     /* First we sort the alis in decending order by q_end position */
     std::sort(ali_group, ali_group + j, ali_sorter_dec);
-    int32_t q_s = ali_group[0]->q_end;
-    int32_t sum_targets = 0;
-    for (int i = 0; i < j; i++) {
+    uint32_t q_s = ali_group[0]->q_end;
+    uint32_t sum_targets = 0;
+    for (uint i = 0; i < j; i++) {
         if ((q_s - (int)ali_group[i]->q_start < MIN_ALI_LEN) ||            // If the alignment is too small we dont want to encode it
             (ali_group[i]->t_idx == -1) ||                                 // If the t_name is not in the read index
             (ali_group[i]->q_end > q_s && ali_group[i]->strand == REV)) {  // TODO: It is a possible bug that reverse alignments get cut when changing the q_end
@@ -131,7 +131,7 @@ bool has_next_ali(char *buf_ptr, file_io_t *in_paf) {
     return buf_ptr < in_paf->buf + in_paf->in_len;
 }
 
-void paf_parse_read_cs_strings(std::string q_name, file_io_t *in_paf, ali_list_t *al, int ns, global_index_t *g_idx) {
+void paf_parse_read_cs_strings(std::string q_name, file_io_t *in_paf, ali_list_t *al) {
     if (in_paf->in_len == 0)
         fill_buf_io(in_paf);
     std::unordered_map<std::string, ali_info>::iterator got = al->alis_info_hm.find(q_name);
@@ -171,7 +171,7 @@ void paf_parse_read_cs_strings(std::string q_name, file_io_t *in_paf, ali_list_t
     }
 }
 
-void paf_parse_read_alignments(std::string q_name, file_io_t *in_paf, ali_list_t *al, int ns, global_index_t *g_idx) {
+void paf_parse_read_alignments(std::string q_name, file_io_t *in_paf, ali_list_t *al, global_index_t *g_idx) {
     alignment_t ali;
     uint32_t j;
     int sz;
@@ -200,14 +200,14 @@ void paf_parse_read_alignments(std::string q_name, file_io_t *in_paf, ali_list_t
         }
     }
     if (j > 0) {
-        preprocess_alignments(ali_group, j, al, g_idx);
+        preprocess_alignments(ali_group, j);
         add_alis(q_name, al, ali_group, j);
     }
     for (j = 0; j < MAX_ALI_R; j++)
         delete ali_group[j];
 }
 
-uint64_t paf_parse_all_alignments(file_io_t *in_paf, ali_list_t *al, enano_params *p, global_index_t *g_idx) {
+uint64_t paf_parse_all_alignments(file_io_t *in_paf, ali_list_t *al, global_index_t *g_idx) {
     int sz;
     alignment_t ali;
     uint32_t j;
@@ -231,7 +231,7 @@ uint64_t paf_parse_all_alignments(file_io_t *in_paf, ali_list_t *al, enano_param
                     *ali_group[j++] = ali;
             } else if (j > 0) {
                 // add the ali_group
-                sum_targets += preprocess_alignments(ali_group, j, al, g_idx);
+                sum_targets += preprocess_alignments(ali_group, j);
                 add_alis(last_q_name, al, ali_group, j);
                 j = 0;
             } else {
@@ -249,7 +249,7 @@ uint64_t paf_parse_all_alignments(file_io_t *in_paf, ali_list_t *al, enano_param
         move_remainder_io(in_paf, buf_ptr);
     }
     if (j > 0) {
-        sum_targets += preprocess_alignments(ali_group, j, al, g_idx);
+        sum_targets += preprocess_alignments(ali_group, j);
         add_alis(last_q_name, al, ali_group, j);
     }
     for (j = 0; j < MAX_ALI_R; j++)

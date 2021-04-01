@@ -150,7 +150,7 @@ void parse_command_line_args(enano_params &p, int argc, char **argv) {
     int open_flag = O_RDONLY;
 
     if (p.aligned) {
-        if (p.decompress == 1 && argc - optind != 3 || p.decompress == 0 && argc - optind != 4) {
+        if (((p.decompress == 1) && (argc - optind != 3)) || ((p.decompress == 0) && (argc - optind != 4))) {
             printf("ERROR: Not enough arguments for REF aligned de/compression.\n");
             usage(1);
         }

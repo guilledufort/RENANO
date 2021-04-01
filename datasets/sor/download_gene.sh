@@ -1,0 +1,2 @@
+curl https://ftp.ncbi.nlm.nih.gov/genomes/refseq/plant/Sorghum_bicolor/all_assembly_versions/GCF_000003195.3_Sorghum_bicolor_NCBIv3/GCF_000003195.3_Sorghum_bicolor_NCBIv3_genomic.fna.gz -o sor_genome.fna.gz
+gunzip sor_genome.fna.gz

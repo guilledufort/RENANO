@@ -1,0 +1,2 @@
+curl https://ftp.ncbi.nlm.nih.gov/genomes/refseq/plant/Brassica_napus/latest_assembly_versions/GCF_000686985.2_Bra_napus_v2.0/GCF_000686985.2_Bra_napus_v2.0_genomic.fna.gz -o bra_genome.fna.gz
+gunzip bra_genome.fna.gz

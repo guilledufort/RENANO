@@ -161,7 +161,7 @@ void output_int32(int32_t i, int out_fd) {
     out[2] = (i >> 16) & 0xff;
     out[3] = (i >> 24) & 0xff;
 
-    int sz = write(out_fd, out, 4);
+    write(out_fd, out, 4);
 }
 
 uint32_t read_int32(int in_fd) {
@@ -170,12 +170,12 @@ uint32_t read_int32(int in_fd) {
     return DECODE_INT((unsigned char *)(in));
 }
 
-ali_list_t *Compressor::store_reference(file_io_t *in_fq, file_io_t *in_paf, int out_fd, uint32_t &ref_len, uint32_t &ref_sz) {
+ali_list_t *Compressor::store_reference(file_io_t *in_paf, int out_fd, uint32_t &ref_len, uint32_t &ref_sz) {
     printf("Storing reference... \n");
     double start_time = omp_get_wtime();
     ali_list_t *al = new ali_list_t;
     init_ali_list_t(al, p->num_reads);
-    uint64_t sum_targets = paf_parse_all_alignments(in_paf, al, p, &p->g_idx);
+    uint64_t sum_targets = paf_parse_all_alignments(in_paf, al, &p->g_idx);
 
     uint32_t max_len = MIN(p->g_idx.total_sz, sum_targets)/4;
     char* ref_output = new char[max_len];
@@ -190,8 +190,8 @@ ali_list_t *Compressor::store_reference(file_io_t *in_fq, file_io_t *in_paf, int
     assert((double)ref_sz*100/max_len < 100);
     printf("ref_sz over max: %0.3f%% (must be less than 100%%)\n", (double)ref_sz*100/max_len);
     printf("Ref entropy: %0.3f \n", (double)ref_sz*8/ref_len);
-    printf("ref_len: %ld \n", ref_len);
-    printf("ref_sz: %ld \n", ref_sz);
+    printf("ref_len: %u \n", ref_len);
+    printf("ref_sz: %u \n", ref_sz);
 
     p->g_idx.ref_len = ref_len;
 
@@ -209,8 +209,8 @@ char *Compressor::decode_reference(ali_comp_t *ac, int in_fd, uint32_t &ref_len)
     ref_len = read_int32(in_fd);
     uint32_t ref_sz = read_int32(in_fd);
 
-    printf("ref_len: %ld \n", ref_len);
-    printf("ref_sz: %ld \n", ref_sz);
+    printf("ref_len: %u \n", ref_len);
+    printf("ref_sz: %u \n", ref_sz);
 
     char *ref_seq = new char[ref_len];
     memset(ref_seq, 0, ref_len * sizeof(char));
@@ -594,7 +594,7 @@ void Compressor::compress_lens_names_seqs(bool aligned) {
                 j++;
 
             std::string r_name = std::string(name_p, j);
-            encode_ali_seq(r_name, ac, i, seq_p, seq_len_a[i], &p->g_idx, p->aligned);
+            encode_ali_seq(r_name, ac, seq_p, seq_len_a[i], &p->g_idx, p->aligned);
         } else
             encode_seq(&rc_seqs, seq_p, seq_len_a[i]);
         name_p += name_len_a[i];
@@ -610,10 +610,12 @@ void Compressor::compress_lens_names_seqs(bool aligned) {
 
     sz_lens = rc_lens.size_out();
     sz_names = rc_names.size_out();
-    if (aligned)
-        sz_seqs = get_enc_size(ac);
-    else
-        sz_seqs = rc_seqs.size_out();
+    if (aligned) {
+        sz_seqs = get_enc_size(ac) + sz_lens;
+        ac->sz_lens = sz_lens;
+        ac->lens_cnt += ns;
+    } else
+        sz_seqs = rc_seqs.size_out() + sz_lens;
 
     name_in += name_p - name_buf;
     name_out += sz_names;
@@ -750,7 +752,7 @@ void Compressor::decompress_name_and_bc_seq(void) {
     char *seq_p = seq_buf;
     char *name_p = name_buf;
 
-    int32_t j = 0, k = 0;
+    int32_t j = 0;
 
     for (int i = 0; i < ns; i++) {
         *name_p++ = '@';
@@ -777,7 +779,7 @@ void Compressor::decompress_name_and_bc_seq_aligned(void) {
     char *seq_p = seq_buf;
     char *name_p = name_buf;
 
-    int32_t j = 0, k = 0;
+    int32_t j = 0;
 
     // Clear alignment lists
     reset_ali_comp_t(ac);
@@ -816,7 +818,7 @@ void Compressor::decompress_qual(void) {
 void Compressor::fq_decompress() {
     char *name_p, *seq_p, *qual_p;
     char *in = decode_buf;
-    uint32_t sz_seqs;
+    uint32_t sz_seqs = 0;
     uint32_t offset = 0;
     uint32_t nseqs = DECODE_INT((unsigned char *)(in + offset));
     offset += 4;
@@ -933,15 +935,15 @@ void Compressor::fq_decompress() {
 
 int Compressor::fq_parse_reads(file_io_t *in_fq, file_io_t *in_paf) {
     char *in = in_fq->buf;
-    int end_hash = 0;
-    int i, j;
+    uint end_hash = 0;
+    uint i, j;
 
     char *name_p = name_buf;
     char *seq_p = seq_buf;
     char *qual_p = qual_buf;
 
     char *in_end;
-    int remainder_length;
+    uint remainder_length;
 
     ns = 0;
 
@@ -989,7 +991,6 @@ int Compressor::fq_parse_reads(file_io_t *in_fq, file_io_t *in_paf) {
 
         len = i - j;
         seq_len_a[ns] = len;
-        uint seq_pos = j;
         memcpy(seq_p, &in[j], len * sizeof(char));
 
         seq_p += len;
@@ -1028,9 +1029,9 @@ int Compressor::fq_parse_reads(file_io_t *in_fq, file_io_t *in_paf) {
             seq_len = -1;
         
         if (p->aligned == REF_ALI) {
-            paf_parse_read_alignments(r_name, in_paf, ac->al, 0, &p->g_idx);
+            paf_parse_read_alignments(r_name, in_paf, ac->al, &p->g_idx);
         } else if (p->aligned == STORE_REF_ALI)
-            paf_parse_read_cs_strings(r_name, in_paf, ac->al, 0, &p->g_idx);
+            paf_parse_read_cs_strings(r_name, in_paf, ac->al);
 
         ns++;
     }

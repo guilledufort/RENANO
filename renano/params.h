@@ -24,6 +24,7 @@ typedef struct {
     int64_t skip_cnt = 0, sz_skip = 0;
     int64_t ins_cnt = 0, sz_ins = 0;
     int64_t seq_cnt = 0, sz_seq = 0;
+    int64_t lens_cnt = 0, sz_lens = 0;
     int64_t tot_alis = 0, tot_matches = 0, tot_strands = 0;
 } global_ali_stats_t;
 
@@ -97,7 +98,7 @@ typedef struct
     global_stats_t g_stats;
 } enano_params;
 
-static void initialize_enano_params(enano_params &p) {
+static inline void initialize_enano_params(enano_params &p) {
     p.klevel = DEFAULT_K_LEVEL;
     p.llevel = DEFAULT_L_LEVEL;
     p.min_cvg = MIN_COVERAGE;
@@ -121,13 +122,7 @@ static void initialize_enano_params(enano_params &p) {
 
 #include <sys/stat.h>
 
-static long FdGetFileSize(int fd) {
-    struct stat stat_buf;
-    int rc = fstat(fd, &stat_buf);
-    return rc == 0 ? stat_buf.st_size : -1;
-}
-
-static void parse_reference_file(enano_params &p) {
+static inline void parse_reference_file(enano_params &p) {
     printf("Parsing reference file... \n");
     double start_time = omp_get_wtime();
     gzFile fp;
@@ -148,7 +143,7 @@ static void parse_reference_file(enano_params &p) {
     printf("Finished in %.2fs \n", omp_get_wtime() - start_time);
 }
 
-static void get_num_reads(enano_params &p) {
+static inline void get_num_reads(enano_params &p) {
     //TODO: Optimize this function
     gzFile fp;
     kseq_t *seq;
@@ -165,7 +160,7 @@ static void get_num_reads(enano_params &p) {
     gzclose(fp);
 }
 
-static void init_g_idx(enano_params &p) {
+static inline void init_g_idx(enano_params &p) {
     if (p.aligned) {
         p.g_idx.aligned = p.aligned;
         if (p.aligned == REF_ALI) {
@@ -190,7 +185,7 @@ static void init_g_idx(enano_params &p) {
         printf("Basecall stream not aligned. \n");
 }
 
-static void free_g_idx(global_index_t &g_idx) {
+static inline void free_g_idx(global_index_t &g_idx) {
     if (g_idx.aligned) {
         for (int i = 0; i < g_idx.nxt_idx; i++) {
             delete[] g_idx.bcs_array[i];

@@ -1,0 +1,2 @@
+curl https://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/Homo_sapiens/latest_assembly_versions/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz -o hss_genome.fna.gz
+gunzip hss_genome.fna.gz

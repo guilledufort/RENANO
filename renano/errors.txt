@@ -1,0 +1,154 @@
+g++ -Wall -fopenmp -std=c++11 -lz -O3 -march=native -fstrict-aliasing -ffast-math -lz -fomit-frame-pointer main.cpp enc_algs.cpp compressor.cpp alignments.cpp paf_process.cpp -o renano
+In file included from alignments.h:38:0,
+                 from paf_process.h:4,
+                 from compressor.h:32,
+                 from enc_algs.h:9,
+                 from main.cpp:26:
+io.h:17:13: warning: ‘void init_file_io(file_io_t*, char*, int, uint32_t)’ defined but not used [-Wunused-function]
+ static void init_file_io(file_io_t* f_io, char* name, int fd, uint32_t sz) {
+             ^
+io.h:25:13: warning: ‘void reset_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void reset_io(file_io_t* f_io) {
+             ^
+io.h:32:13: warning: ‘void close_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void close_io(file_io_t* f_io) {
+             ^
+io.h:36:16: warning: ‘ssize_t xread(int, char*, size_t)’ defined but not used [-Wunused-function]
+ static ssize_t xread(int fd, char* buf, size_t count) {
+                ^
+io.h:69:16: warning: ‘ssize_t fill_buf_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static ssize_t fill_buf_io(file_io_t* f_io) {
+                ^
+io.h:96:16: warning: ‘ssize_t fill_buf_io(file_io_t*, char*)’ defined but not used [-Wunused-function]
+ static ssize_t fill_buf_io(file_io_t* f_io, char* in_end) {
+                ^
+In file included from alignments.h:38:0,
+                 from paf_process.h:4,
+                 from compressor.h:32,
+                 from enc_algs.h:9,
+                 from enc_algs.cpp:1:
+io.h:25:13: warning: ‘void reset_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void reset_io(file_io_t* f_io) {
+             ^
+io.h:36:16: warning: ‘ssize_t xread(int, char*, size_t)’ defined but not used [-Wunused-function]
+ static ssize_t xread(int fd, char* buf, size_t count) {
+                ^
+io.h:96:16: warning: ‘ssize_t fill_buf_io(file_io_t*, char*)’ defined but not used [-Wunused-function]
+ static ssize_t fill_buf_io(file_io_t* f_io, char* in_end) {
+                ^
+In file included from alignments.h:38:0,
+                 from paf_process.h:4,
+                 from compressor.h:32,
+                 from compressor.cpp:23:
+io.h:17:13: warning: ‘void init_file_io(file_io_t*, char*, int, uint32_t)’ defined but not used [-Wunused-function]
+ static void init_file_io(file_io_t* f_io, char* name, int fd, uint32_t sz) {
+             ^
+io.h:32:13: warning: ‘void close_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void close_io(file_io_t* f_io) {
+             ^
+io.h:36:16: warning: ‘ssize_t xread(int, char*, size_t)’ defined but not used [-Wunused-function]
+ static ssize_t xread(int fd, char* buf, size_t count) {
+                ^
+io.h:69:16: warning: ‘ssize_t fill_buf_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static ssize_t fill_buf_io(file_io_t* f_io) {
+                ^
+io.h:96:16: warning: ‘ssize_t fill_buf_io(file_io_t*, char*)’ defined but not used [-Wunused-function]
+ static ssize_t fill_buf_io(file_io_t* f_io, char* in_end) {
+                ^
+In file included from alignments.h:38:0,
+                 from alignments.cpp:1:
+io.h:17:13: warning: ‘void init_file_io(file_io_t*, char*, int, uint32_t)’ defined but not used [-Wunused-function]
+ static void init_file_io(file_io_t* f_io, char* name, int fd, uint32_t sz) {
+             ^
+io.h:25:13: warning: ‘void reset_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void reset_io(file_io_t* f_io) {
+             ^
+io.h:32:13: warning: ‘void close_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void close_io(file_io_t* f_io) {
+             ^
+io.h:36:16: warning: ‘ssize_t xread(int, char*, size_t)’ defined but not used [-Wunused-function]
+ static ssize_t xread(int fd, char* buf, size_t count) {
+                ^
+io.h:69:16: warning: ‘ssize_t fill_buf_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static ssize_t fill_buf_io(file_io_t* f_io) {
+                ^
+io.h:96:16: warning: ‘ssize_t fill_buf_io(file_io_t*, char*)’ defined but not used [-Wunused-function]
+ static ssize_t fill_buf_io(file_io_t* f_io, char* in_end) {
+                ^
+In file included from alignments.h:38:0,
+                 from paf_process.h:4,
+                 from paf_process.cpp:1:
+io.h:17:13: warning: ‘void init_file_io(file_io_t*, char*, int, uint32_t)’ defined but not used [-Wunused-function]
+ static void init_file_io(file_io_t* f_io, char* name, int fd, uint32_t sz) {
+             ^
+io.h:25:13: warning: ‘void reset_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void reset_io(file_io_t* f_io) {
+             ^
+io.h:32:13: warning: ‘void close_io(file_io_t*)’ defined but not used [-Wunused-function]
+ static void close_io(file_io_t* f_io) {
+             ^
+io.h:36:16: warning: ‘ssize_t xread(int, char*, size_t)’ defined but not used [-Wunused-function]
+ static ssize_t xread(int fd, char* buf, size_t count) {
+                ^
+/tmp/cciHS9Qs.o: In function `initialize_enano_params(enano_params&)':
+enc_algs.cpp:(.text+0x1050): multiple definition of `initialize_enano_params(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xaf0): first defined here
+/tmp/cciHS9Qs.o: In function `get_num_reads(enano_params&)':
+enc_algs.cpp:(.text+0x10c0): multiple definition of `get_num_reads(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xb60): first defined here
+/tmp/cciHS9Qs.o: In function `free_g_idx(global_index_t&)':
+enc_algs.cpp:(.text+0x1190): multiple definition of `free_g_idx(global_index_t&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xc30): first defined here
+/tmp/cciHS9Qs.o: In function `parse_reference_file(enano_params&)':
+enc_algs.cpp:(.text+0x7e80): multiple definition of `parse_reference_file(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1960): first defined here
+/tmp/cciHS9Qs.o: In function `init_g_idx(enano_params&)':
+enc_algs.cpp:(.text+0x8220): multiple definition of `init_g_idx(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1d20): first defined here
+/tmp/ccHHcmPV.o: In function `initialize_enano_params(enano_params&)':
+compressor.cpp:(.text+0xa10): multiple definition of `initialize_enano_params(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xaf0): first defined here
+/tmp/ccHHcmPV.o: In function `get_num_reads(enano_params&)':
+compressor.cpp:(.text+0xa80): multiple definition of `get_num_reads(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xb60): first defined here
+/tmp/ccHHcmPV.o: In function `free_g_idx(global_index_t&)':
+compressor.cpp:(.text+0xb50): multiple definition of `free_g_idx(global_index_t&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xc30): first defined here
+/tmp/ccHHcmPV.o: In function `parse_reference_file(enano_params&)':
+compressor.cpp:(.text+0xe430): multiple definition of `parse_reference_file(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1960): first defined here
+/tmp/ccHHcmPV.o: In function `init_g_idx(enano_params&)':
+compressor.cpp:(.text+0xe7f0): multiple definition of `init_g_idx(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1d20): first defined here
+/tmp/ccyqjvnu.o: In function `initialize_enano_params(enano_params&)':
+alignments.cpp:(.text+0x1000): multiple definition of `initialize_enano_params(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xaf0): first defined here
+/tmp/ccyqjvnu.o: In function `get_num_reads(enano_params&)':
+alignments.cpp:(.text+0x1070): multiple definition of `get_num_reads(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xb60): first defined here
+/tmp/ccyqjvnu.o: In function `free_g_idx(global_index_t&)':
+alignments.cpp:(.text+0x1140): multiple definition of `free_g_idx(global_index_t&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xc30): first defined here
+/tmp/ccyqjvnu.o: In function `parse_reference_file(enano_params&)':
+alignments.cpp:(.text+0xe1e0): multiple definition of `parse_reference_file(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1960): first defined here
+/tmp/ccyqjvnu.o: In function `init_g_idx(enano_params&)':
+alignments.cpp:(.text+0xe480): multiple definition of `init_g_idx(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1d20): first defined here
+/tmp/ccDZCql6.o: In function `initialize_enano_params(enano_params&)':
+paf_process.cpp:(.text+0x1310): multiple definition of `initialize_enano_params(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xaf0): first defined here
+/tmp/ccDZCql6.o: In function `get_num_reads(enano_params&)':
+paf_process.cpp:(.text+0x1380): multiple definition of `get_num_reads(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xb60): first defined here
+/tmp/ccDZCql6.o: In function `free_g_idx(global_index_t&)':
+paf_process.cpp:(.text+0x1450): multiple definition of `free_g_idx(global_index_t&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0xc30): first defined here
+/tmp/ccDZCql6.o: In function `parse_reference_file(enano_params&)':
+paf_process.cpp:(.text+0x1af0): multiple definition of `parse_reference_file(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1960): first defined here
+/tmp/ccDZCql6.o: In function `init_g_idx(enano_params&)':
+paf_process.cpp:(.text+0x1eb0): multiple definition of `init_g_idx(enano_params&)'
+/tmp/cczK8Jt5.o:main.cpp:(.text+0x1d20): first defined here
+collect2: error: ld returned 1 exit status
+make: *** [renano] Error 1

@@ -7,7 +7,6 @@
 #include <iostream>
 
 #include "compressor.h"
-#include "io.h"
 
 typedef struct
 {
