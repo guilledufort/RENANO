@@ -1,6 +1,6 @@
 // MIT License
 
-// Copyright (c) 2020 Guillermo Dufort y Álvarez
+// Copyright (c) 2021 Guillermo Dufort y Álvarez
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
