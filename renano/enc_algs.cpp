@@ -36,18 +36,18 @@ void print_enc_results(enano_params *p) {
         "Stream <original size in bytes> -> <compressed size in bytes> "
         "(<compression ratio>)\n");
 
-    printf("IDs   %lu -> %lu (%0.3f)\n", p->g_stats.name_in, p->g_stats.name_out,
+    printf("IDs   %llu -> %llu (%0.3f)\n", p->g_stats.name_in, p->g_stats.name_out,
            (double)p->g_stats.name_out / p->g_stats.name_in);
     if (p->aligned == STORE_REF_ALI)
-        printf("Bases %lu -> %lu (%0.3f) - without ref: (%0.3f) - ref: (%0.3f%%) \n", p->g_stats.base_in, p->g_stats.base_out,
+        printf("Bases %llu -> %llu (%0.3f) - without ref: (%0.3f) - ref: (%0.3f%%) \n", p->g_stats.base_in, p->g_stats.base_out,
            (double)p->g_stats.base_out / p->g_stats.base_in, (double)(p->g_stats.base_out - p->g_stats.ref_sz) / p->g_stats.base_in,
             (double)p->g_stats.ref_sz*100/p->g_stats.base_out);
     else 
-        printf("Bases %lu -> %lu (%0.3f)\n", p->g_stats.base_in, p->g_stats.base_out,
+        printf("Bases %llu -> %llu (%0.3f)\n", p->g_stats.base_in, p->g_stats.base_out,
            (double)p->g_stats.base_out / p->g_stats.base_in);
-    printf("Quals %lu -> %lu (%0.3f)\n", p->g_stats.qual_in, p->g_stats.qual_out,
+    printf("Quals %llu -> %llu (%0.3f)\n", p->g_stats.qual_in, p->g_stats.qual_out,
            (double)p->g_stats.qual_out / p->g_stats.qual_in);
-    printf("Total %lu -> %lu (%0.3f)\n", p->g_stats.total_in, p->g_stats.total_out,
+    printf("Total %llu -> %llu (%0.3f)\n", p->g_stats.total_in, p->g_stats.total_out,
            (double)p->g_stats.total_out / p->g_stats.total_in);
 }
 
