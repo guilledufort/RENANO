@@ -22,7 +22,10 @@
 #ifndef ALIGNMENTS_H
 #define ALIGNMENTS_H
 
-#include <bits/stdc++.h>
+#include <assert.h>
+#include <math.h>
+#include <vector>
+#include <list>
 #include <ctype.h>
 #include <fcntl.h>
 #include <inttypes.h>
