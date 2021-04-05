@@ -6,6 +6,18 @@ RENANO is a reference-based lossless FASTQ data compressor, specifically tailore
 RENANO improves on its state of the art predecessor [ENANO](https://github.com/guilledufort/EnanoFASTQ/blob/master/README.md), by providing a more efficient base call sequence compression component.
 Two compression algorithms are introduced, corresponding to the following scenarios: (1) a reference genome is available without cost to both the compressor and the decompressor;  (2) the reference genome is available only on the compressor side, and a compacted version of the reference is included in the compressed file.
 
+## Install with Conda
+To install directly from source, follow the instructions in the next section.
+
+RENANO is available on conda via the bioconda channel. See [this](https://bioconda.github.io/user/install.html) page for installation instructions for conda. Once conda is installed, do the following to install renano.
+```bash
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+conda install renano
+```
+Note that if renano is installed this way, it should be invoked with the command `renano` rather than `./renano`. The bioconda [help page](https://bioconda.github.io/user/install.html) shows the commands if you wish to install renano in an environment.
+
 ## Install from source code
 
 ### Download repository
@@ -162,6 +174,7 @@ cd RENANO
 
 ## Examples
 We add an *example* folder with test files to run simple use examples the tool.
+If installed using conda, use the command `renano` instead of `renano/renano`.
 ### Compress using RENANO with reference
 To run the compressor with 8 threads on the example file:
 ```bash
