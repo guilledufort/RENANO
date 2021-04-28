@@ -179,13 +179,13 @@ If installed using conda, use the command `renano` instead of `renano/renano`.
 To run the compressor with 8 threads on the example file:
 ```bash
 cd RENANO
-renano/renano -r example/yst_genome.fna example/SAMPLE.paf example/SAMPLE.fastq example/SAMPLE.renano
+renano/renano -t 8 -r example/yst_genome.fna example/SAMPLE.paf example/SAMPLE.fastq example/SAMPLE.renano
 ```
 ### Decompress using RENANO with reference
 To decompress with 8 threads the example compressed file:
 ```bash
 cd RENANO
-renano/renano -d -r example/yst_genome.fna example/SAMPLE.renano example/SAMPLE_dec.fastq
+renano/renano -t 8 -d -r example/yst_genome.fna example/SAMPLE.renano example/SAMPLE_dec.fastq
 ```
 
 ### Check if decoding is successful
