@@ -109,9 +109,9 @@ To test our compressor we ran experiments on the following datasets. The full in
 |------|------|------|------|------|
 *hss* | 1 | 268 | Human GM12878 Utah/Ceph cell line | https://github.com/nanopore-wgs-consortium/NA12878 |
 *bra\** | 18 | 46 | Doubled haploid canola (Brassica napus L.) | https://www.nature.com/articles/s41598-019-45131-0#data-availability |
-*sor\** | 4 | 134 | Sorghum bicolor Tx430 | https://www.nature.com/articles/s41467-018-07271-1#data-availability |
+*sor\** | 4 | 133 | Sorghum bicolor Tx430 | https://www.nature.com/articles/s41467-018-07271-1#data-availability |
 *fly\** | 1 | 17 | Drosophila ananassae | https://www.g3journal.org/content/8/10/3131#sec-1 |
-*yst\** | 5 | 8 | Saccharomyces cerevisiae S288C | https://academic.oup.com/gigascience/article/6/2/giw018/2865217 |
+*yst\** | 5 | 6 | Saccharomyces cerevisiae S288C | https://academic.oup.com/gigascience/article/6/2/giw018/2865217 |
 
 \*Datasets that require the SRA toolkit to be downloaded. 
 

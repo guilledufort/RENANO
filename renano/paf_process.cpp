@@ -101,15 +101,15 @@ void add_alis(std::string q_name, ali_list_t *al, alignment_t *ali_group[MAX_ALI
 static inline int32_t preprocess_alignments(alignment_t *ali_group[MAX_ALI_R], uint8_t j) {
     /* First we sort the alis in decending order by q_end position */
     std::sort(ali_group, ali_group + j, ali_sorter_dec);
-    uint32_t q_s = ali_group[0]->q_end;
+    int32_t q_s = ali_group[0]->q_end;
     uint32_t sum_targets = 0;
     for (uint i = 0; i < j; i++) {
         if ((q_s - (int)ali_group[i]->q_start < MIN_ALI_LEN) ||            // If the alignment is too small we dont want to encode it
             (ali_group[i]->t_idx == -1) ||                                 // If the t_name is not in the read index
-            (ali_group[i]->q_end > q_s && ali_group[i]->strand == REV)) {  // TODO: It is a possible bug that reverse alignments get cut when changing the q_end
+            ((int)ali_group[i]->q_end > q_s && ali_group[i]->strand == REV)) {  // TODO: It is a possible bug that reverse alignments get cut when changing the q_end
             ali_group[i]->aligned = false;
         } else {
-            ali_group[i]->q_end = MIN(q_s, ali_group[i]->q_end);
+            ali_group[i]->q_end = MIN(q_s, (int)ali_group[i]->q_end);
             q_s = ali_group[i]->q_start - 1;
             sum_targets += ali_group[i]->t_end - ali_group[i]->t_start;
         }
