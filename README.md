@@ -197,6 +197,6 @@ cmp example/SAMPLE.fastq example/SAMPLE_dec.fastq
 
 ## Credits
 The methods used for encoding the reads identifiers, and to model frequency counters,
-are the ones proposed by James Bonefield in FQZComp, with some modifications.
+are the ones proposed by James Bonfield in FQZComp, with some modifications.
 The range coder is derived from Eugene Shelwien.
 The kseq library used to parse FASTA files is authored by Heng Li.
