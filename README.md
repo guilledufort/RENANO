@@ -112,6 +112,7 @@ To test our compressor we ran experiments on the following datasets. The full in
 *sor\** | 4 | 133 | Sorghum bicolor Tx430 | https://www.nature.com/articles/s41467-018-07271-1#data-availability |
 *fly\** | 1 | 17 | Drosophila ananassae | https://www.g3journal.org/content/8/10/3131#sec-1 |
 *yst\** | 5 | 6 | Saccharomyces cerevisiae S288C | https://academic.oup.com/gigascience/article/6/2/giw018/2865217 |
+*mic\** | 1 | 12 | Microbial community (metagenomic) | https://www.nature.com/articles/s41598-020-61989-x |
 
 \*Datasets that require the SRA toolkit to be downloaded. 
 
@@ -124,7 +125,7 @@ cd RENANO
 dataset/sor/download_script.sh
 ```
 
-To download the reference genome of a dataset you have to run the *download_gene.sh* script of the specific dataset.
+To download the reference genome of a dataset (except for dataset *mic*) you have to run the *download_gene.sh* script of the specific dataset.
 For example, to download *sor* reference genome run:
 ```bash
 cd RENANO
@@ -146,6 +147,39 @@ For example, to install the SRA toolkit on macOS you can run:
  ```bash
 cd RENANO
 ./install_SRA_mac.sh
+```
+
+In the case of the metagenomic dataset *mic* we do not have a reference genome sequence in advance. In this sense, in the next section we propose pipeline of operations to consruct a reference genome sequence that represents the most prevalent organisms in a dataset, which we utilized with dataset *mic*.
+
+### Constructing a reference sequence for a metagenomic (or contaminated) dataset
+
+To construct a referernce genome sequence for a metagenomic (or contaminated) dataset, such as *mic*, we propose a pipeline of operations and provide a series of scripts that facilitate its excecution. Let *[DS]* be the name of the dataset for which we want to construct the reference, a dataset folder with the name *[DS]*, containing the desired set FASTQ files, must be previously created in directory *RENANO/datasets/[DS]*.
+
+Note: Steps 1 to 3 are optional. If Kraken2 is already installed, the user can create its own Kraken2 report, and then use it as input in Step 4.
+
+- Step 1: Install Kraken2 into RENANO's root folder
+```bash
+cd RENANO
+./install_kraken2.sh
+```
+
+- Step 2: Download and install Kraken2 pre-compiled mini database (8GB):
+```bash
+cd RENANO
+./install_kraken2_stdDB.sh
+```
+
+- Step 3: Run Kraken2 on de desired dataset. The script receives two arguments: the dataset name *[DS]*, and the number of threads to be used. The script creates a Kraken2 report in folder *RENANO/datasets/[DS]* with name *[DS].report*. The report contains a statistical report of the species that were detected by Kraken2 in the dataset.
+```bash
+cd RENANO
+./run_kraken2.sh -d [DS] -t [NUM_THREADS] 
+```
+
+- Step 4: Construct a representative reference sequence for dataset *[DS]* composed of the most prevalent species genomes reported in the Kraken2 report. The script receives one obligatory argument, and three optional. The obligatory argument is the dataset name *[DS]*. The script also receives the optional parameter *-r* with the name of a Kraken2 report file of the *[DS]* dataset; the default value is *RENANO/datasets/[DS].report*. The optional argument *-d* is a float number that represents the minimum percentage a species has to cover in the dataset, in terms of reads, to be included in the representative reference sequence; the default value is 0.3%. Lastly, argument *-m* is a positive integer that represents the maximum number of species that we want add to the representative reference sequence; the default value is 20. The script outputs a MULTI-FASTA file to *RENANO/datasets/[DS].fna*, which is constructed as the concatenation of the most prevalent species detected in the Kraken2 report.
+
+```bash
+cd RENANO
+python create_ref.py -d [DS] -r [report_file_name] -c [MIN_COVERAGE] -m [MAX_SPECIES] 
 ```
 
 ## Alignment information
