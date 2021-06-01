@@ -47,9 +47,6 @@ static void usage(int err) {
 
     printf("COMPRESSION OPTIONS: \n");
     printf(
-        "\t-c             To use MAX COMPRESION MODE. Default is FAST "
-        "MODE.\n\n");
-    printf(
         "\t-k <length>    Base call sequence context length. Default is 7 (max "
         "13).\n\n");
     printf(

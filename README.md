@@ -81,7 +81,6 @@ COMPRESSION:
 	renano [options] -s [ref_file [paf_file]] [input_file [output_file]]
 
 COMPRESSION OPTIONS:
-	-c             To use MAX COMPRESION MODE. Default is FAST MODE.
 
 	-k <length>    Base call sequence context length. Default is 7 (max 13).
 
